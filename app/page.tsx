@@ -1,124 +1,101 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Sidebar } from "@/components/sidebar"
-import { MarketGrid } from "@/components/market-grid"
-import { MarketModal } from "@/components/market-modal"
-import { TradingModal } from "@/components/trading-modal"
-import { Market } from "@/types/market"
-import { ConnectButton } from "thirdweb/react";
-import {client} from '../lib/utils'
-
-
-const sampleMarkets: Market[] = [
-  {
-    id: "1",
-    title: "Ethereum's new ATH by end of 2025?",
-    category: "Crypto",
-    probability: 58,
-    change: 2,
-    volume: "$50.1k",
-    endDate: "Dec 31",
-    image: "/ethereum-logo.png",
-    yesPrice: 0.58,
-    noPrice: 0.42,
-    totalVolume: 4849,
-    description: "Will Ethereum reach a new all-time high price by December 31, 2025?"
-  },
-  {
-    id: "2",
-    title: "Will a PENGU ETF be approved before October?",
-    category: "Crypto",
-    probability: 15,
-    change: -3,
-    volume: "$726",
-    endDate: "Oct 1",
-    image: "/penguin-mascot.png",
-    yesPrice: 0.15,
-    noPrice: 0.85,
-    totalVolume: 726,
-    description: "Will the SEC approve a PENGU ETF before October 2025?"
-  },
-  {
-    id: "3",
-    title: "Bitcoin's next hit: moon to $125K or dip to $105K?",
-    category: "Crypto",
-    probability: 54,
-    change: 1,
-    volume: "$72.5k",
-    endDate: "Dec 31",
-    image: "/bitcoin-logo.png",
-    yesPrice: 0.54,
-    noPrice: 0.46,
-    totalVolume: 3540,
-    description: "Will Bitcoin reach $125K before it drops to $105K?"
-  },
-  {
-    id: "4",
-    title: "Will Donald Trump visit China in 2025?",
-    category: "Politics",
-    probability: 52,
-    change: 0,
-    volume: "$35.5k",
-    endDate: "Jan 1",
-    image: "/trump-china-flags.png",
-    yesPrice: 0.52,
-    noPrice: 0.48,
-    totalVolume: 4464,
-    description: "Will Donald Trump make an official visit to China during 2025?"
-  },
-  {
-    id: "5",
-    title: "Will Binance or Coinbase list REKT before September?",
-    category: "Crypto",
-    probability: 43,
-    change: -2,
-    volume: "$34.7k",
-    endDate: "Sep 1",
-    image: "/cryptocurrency-exchange.png",
-    yesPrice: 0.43,
-    noPrice: 0.57,
-    totalVolume: 1418,
-    description: "Will either Binance or Coinbase list the REKT token before September 2025?"
-  },
-  {
-    id: "6",
-    title: "Fear & Greed next hit: moon to 80 or dip to 40?",
-    category: "Economy",
-    probability: 58,
-    change: 4,
-    volume: "$28.1k",
-    endDate: "Dec 31",
-    image: "/fear-greed-index-chart.png",
-    yesPrice: 0.58,
-    noPrice: 0.42,
-    totalVolume: 2535,
-    description: "Will the Fear & Greed Index reach 80 before dropping to 40?"
-  }
-]
+import { useState, useEffect } from "react";
+import { Sidebar } from "@/components/sidebar";
+import { MarketGrid } from "@/components/market-grid";
+import {
+  ConnectButton,
+  useSendAndConfirmTransaction,
+  useReadContract,
+} from "thirdweb/react";
+import { client, marketIds } from "../lib/utils";
+import { contract } from "@/lib/contract-utils";
+import { prepareContractCall } from "thirdweb";
+import { toWei } from "thirdweb/utils";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function HomePage() {
-  const [selectedMarket, setSelectedMarket] = useState<Market | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string>("All")
-  const [tradingModal, setTradingModal] = useState<{
-    market: Market
-    side: 'yes' | 'no'
-  } | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [existingMarketIds, setExistingMarketIds] = useState<number[]>([]);
 
-  const filteredMarkets = selectedCategory === "All" 
-    ? sampleMarkets 
-    : sampleMarkets.filter(market => market.category === selectedCategory)
+  // Fetch the number of markets from the contract
+  const { data: marketCounter } = useReadContract({
+    contract: contract,
+    method: "marketCounter",
+    params: [],
+  });
 
-  const handleTradeClick = (market: Market, side: 'yes' | 'no') => {
-    setTradingModal({ market, side })
-  }
+  const { mutateAsync: mutateTransaction } = useSendAndConfirmTransaction();
 
-  const handleConfirmTrade = (market: Market, side: 'yes' | 'no', amount: number) => {
-    // Handle the trade confirmation here
-    console.log(`Trading ${amount} on ${side} for market: ${market.title}`)
-    // You would typically send this to your backend/blockchain here
-  }
+  useEffect(() => {
+    // Update existingMarketIds when marketCounter changes
+    if (marketCounter) {
+      setExistingMarketIds(marketIds(marketCounter));
+    }
+  }, [marketCounter]);
 
+  // place a bet
+  const handlePlaceBet = async (
+    marketId: number,
+    side: "yes" | "no",
+    betAmount: number
+  ) => {
+    const isYes = side === "yes" ? true : false;
+    const marketIdBigInt = BigInt(marketId);
+    const betAmountWei = toWei(betAmount.toString());
+
+    // Prepare and send the transaction to place a bet
+    const transaction = prepareContractCall({
+      contract,
+      method: "function placeBet(uint256 marketId, bool isYes)",
+      params: [marketIdBigInt, isYes],
+      value: betAmountWei, // Attach the bet amount as value
+    });
+
+    try {
+      const result = await mutateTransaction(transaction);
+      console.log({ result });
+    } catch (error) {
+      console.log({ error });
+      toast.error("Market not active.");
+    }
+  };
+
+  const claimWinnings = async (marketId: number) => {
+    console.log("Claiming winnings for market ID:", marketId);
+    // Prepare and send the transaction to claim winnings
+    const marketIdBigInt = BigInt(marketId);
+    const transaction = prepareContractCall({
+      contract,
+      method: "function claimWinnings(uint256 marketId)",
+      params: [marketIdBigInt],
+    });
+
+    try {
+      const result = await mutateTransaction(transaction);
+      console.log("Winnings claimed", result);
+      toast.success("Congrats on your winnings!");
+    } catch (error) {
+      toast.error("Winnings have been claimed.");
+    }
+  };
+
+  const resolveMarket = async (marketId: number, winner: string) => {
+    console.log("resolve market for market ID:", marketId);
+    // Prepare and send the transaction to claim winnings
+    const marketIdBigInt = BigInt(marketId);
+    const winnerInt = Number(winner);
+    const transaction = prepareContractCall({
+      contract,
+      method: "function resolveMarket(uint256 marketId, uint8 winner)",
+      params: [marketIdBigInt, winnerInt],
+    });
+    try {
+      await mutateTransaction(transaction);
+    } catch (error) {
+      toast.error("Market has been resolved.");
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-950">
@@ -132,7 +109,7 @@ export default function HomePage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Markets</h1>
             <p className="text-gray-400">
-              Trade on the outcomes of future events
+              Show you're an expert. Trade on the outcomes of future events.
             </p>
           </div>
 
@@ -141,28 +118,15 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* pass the array of existing market IDs to MarketGrid to generate cards for each market */}
         <MarketGrid
-          markets={filteredMarkets}
-          onMarketClick={setSelectedMarket}
-          onTradeClick={handleTradeClick}
+          existingMarketIds={existingMarketIds}
+          handlePlaceBet={handlePlaceBet}
+          claimWinnings={claimWinnings}
+          resolveMarket={resolveMarket}
         />
+        <Toaster />
       </main>
-
-      {selectedMarket && (
-        <MarketModal
-          market={selectedMarket}
-          onClose={() => setSelectedMarket(null)}
-        />
-      )}
-
-      {tradingModal && (
-        <TradingModal
-          market={tradingModal.market}
-          side={tradingModal.side}
-          onClose={() => setTradingModal(null)}
-          onConfirmTrade={handleConfirmTrade}
-        />
-      )}
     </div>
   );
 }
