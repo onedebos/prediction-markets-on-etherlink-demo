@@ -189,35 +189,6 @@ const abi = [
         type: "uint256",
       },
     ],
-    name: "calculatePotentialPayout",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "marketId",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "isYes",
-        type: "bool",
-      },
-      {
-        internalType: "uint256",
-        name: "betAmount",
-        type: "uint256",
-      },
-    ],
     name: "calculateShares",
     outputs: [
       {
@@ -247,11 +218,6 @@ const abi = [
       {
         internalType: "string",
         name: "question",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "description",
         type: "string",
       },
       {
@@ -291,11 +257,6 @@ const abi = [
           {
             internalType: "string",
             name: "question",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "description",
             type: "string",
           },
           {
@@ -344,17 +305,12 @@ const abi = [
             type: "address",
           },
           {
-            internalType: "uint256",
-            name: "createdAt",
-            type: "uint256",
-          },
-          {
             internalType: "bool",
             name: "active",
             type: "bool",
           },
         ],
-        internalType: "struct PredictxtzContractWithoutFees.Market",
+        internalType: "struct PredictxtzContract.Market",
         name: "",
         type: "tuple",
       },
@@ -448,7 +404,7 @@ const abi = [
             type: "bool",
           },
         ],
-        internalType: "struct PredictxtzContractWithoutFees.Position",
+        internalType: "struct PredictxtzContract.Position",
         name: "",
         type: "tuple",
       },
@@ -487,11 +443,6 @@ const abi = [
       {
         internalType: "string",
         name: "question",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "description",
         type: "string",
       },
       {
@@ -538,11 +489,6 @@ const abi = [
         internalType: "address",
         name: "creator",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "createdAt",
-        type: "uint256",
       },
       {
         internalType: "bool",
@@ -714,44 +660,7 @@ const abi = [
     stateMutability: "view",
     type: "function",
   },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-    ],
-    name: "withdrawFunds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
 ];
-
- 
-
-export const CONTRACT_ABI = {
-  createMarket:
-    "function createMarket(string calldata question, string calldata description, uint256 duration) external returns (uint256)",
-  placeBet: "function placeBet(uint256 marketId, bool isYes) external payable",
-  getMarket:
-    "function getMarket(uint256 marketId) external view returns (tuple(uint256 id, string question, string description, uint256 endTime, bool resolved, uint8 winner, uint256 totalYesAmount, uint256 totalNoAmount, uint256 totalYesShares, uint256 totalNoShares, uint256 feesCollected, address creator, uint256 createdAt, bool active))",
-  getUserPosition:
-    "function getUserPosition(uint256 marketId, address user) external view returns (tuple(uint256 yesAmount, uint256 noAmount, uint256 yesShares, uint256 noShares, bool claimed))",
-  claimWinnings: "function claimWinnings(uint256 marketId) external",
-  pricePerShareWithFees:
-    "function pricePerShareWithFees(uint256 marketId, bool isYes) external view returns (uint256)",
-  calculatePotentialPayout:
-    "function calculatePotentialPayout(uint256 marketId, bool isYes, uint256 betAmount) external view returns (uint256)",
-  marketCounter: "function marketCounter() external view returns (uint256)",
-  MarketCreated:
-    "event MarketCreated(uint256 indexed marketId, address indexed creator, string question, uint256 endTime)",
-  BetPlaced:
-    "event BetPlaced(uint256 indexed marketId, address indexed user, bool indexed isYes, uint256 amount, uint256 shares)",
-  MarketResolved:
-    "event MarketResolved(uint256 indexed marketId, uint8 indexed winner, address indexed resolver)",
-};
 
 export const contract = getContract({
   client, // your thirdweb client
