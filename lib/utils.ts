@@ -11,3 +11,10 @@ export function cn(...inputs: ClassValue[]) {
 export const client = createThirdwebClient({
   clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID!,
 });
+
+// generate an array of market IDs based on the no of markets
+export const marketIds = (noOfMarkets:[]) => {
+return noOfMarkets
+  ? Array.from({ length: Number(noOfMarkets) }, (_, i) => i + 1)
+  : [];
+};
