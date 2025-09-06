@@ -8,7 +8,8 @@ import {
   useSendAndConfirmTransaction,
   useReadContract,
 } from "thirdweb/react";
-import { client, marketIds } from "../lib/utils";
+import { marketIds } from "../lib/utils";
+import {client} from '../lib/provider'
 import { contract } from "@/lib/contract-utils";
 import { prepareContractCall } from "thirdweb";
 import { toWei } from "thirdweb/utils";
