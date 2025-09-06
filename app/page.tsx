@@ -9,7 +9,7 @@ import {
   useReadContract,
 } from "thirdweb/react";
 import { marketIds } from "../lib/utils";
-import {client} from '../lib/provider'
+import {client} from '../lib/providers'
 import { contract } from "@/lib/contract-utils";
 import { prepareContractCall } from "thirdweb";
 import { toWei } from "thirdweb/utils";

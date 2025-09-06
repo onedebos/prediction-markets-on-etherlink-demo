@@ -1,6 +1,6 @@
 import { getContract } from "thirdweb";
 import { etherlinkTestnet } from "thirdweb/chains";
-import {client} from './provider'
+import {client} from './providers'
 
 const abi = [
   {
