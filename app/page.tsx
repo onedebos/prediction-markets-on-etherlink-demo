@@ -27,20 +27,6 @@ const sampleMarkets: Market[] = [
   },
   {
     id: "2",
-    title: "Will a PENGU ETF be approved before October?",
-    category: "Crypto",
-    probability: 15,
-    change: -3,
-    volume: "$726",
-    endDate: "Oct 1",
-    image: "/penguin-mascot.png",
-    yesPrice: 0.15,
-    noPrice: 0.85,
-    totalVolume: 726,
-    description: "Will the SEC approve a PENGU ETF before October 2025?"
-  },
-  {
-    id: "3",
     title: "Bitcoin's next hit: moon to $125K or dip to $105K?",
     category: "Crypto",
     probability: 54,
@@ -53,48 +39,6 @@ const sampleMarkets: Market[] = [
     totalVolume: 3540,
     description: "Will Bitcoin reach $125K before it drops to $105K?"
   },
-  {
-    id: "4",
-    title: "Will Donald Trump visit China in 2025?",
-    category: "Politics",
-    probability: 52,
-    change: 0,
-    volume: "$35.5k",
-    endDate: "Jan 1",
-    image: "/trump-china-flags.png",
-    yesPrice: 0.52,
-    noPrice: 0.48,
-    totalVolume: 4464,
-    description: "Will Donald Trump make an official visit to China during 2025?"
-  },
-  {
-    id: "5",
-    title: "Will Binance or Coinbase list REKT before September?",
-    category: "Crypto",
-    probability: 43,
-    change: -2,
-    volume: "$34.7k",
-    endDate: "Sep 1",
-    image: "/cryptocurrency-exchange.png",
-    yesPrice: 0.43,
-    noPrice: 0.57,
-    totalVolume: 1418,
-    description: "Will either Binance or Coinbase list the REKT token before September 2025?"
-  },
-  {
-    id: "6",
-    title: "Fear & Greed next hit: moon to 80 or dip to 40?",
-    category: "Economy",
-    probability: 58,
-    change: 4,
-    volume: "$28.1k",
-    endDate: "Dec 31",
-    image: "/fear-greed-index-chart.png",
-    yesPrice: 0.58,
-    noPrice: 0.42,
-    totalVolume: 2535,
-    description: "Will the Fear & Greed Index reach 80 before dropping to 40?"
-  }
 ]
 
 export default function HomePage() {
