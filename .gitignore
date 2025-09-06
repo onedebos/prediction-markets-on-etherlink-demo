@@ -12,7 +12,8 @@ node_modules/
 
 # Environment files
 .env
-.env./**
+.env.local
+
 
 # Build directories
 dist/
