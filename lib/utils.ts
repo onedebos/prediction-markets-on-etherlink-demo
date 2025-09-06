@@ -13,7 +13,7 @@ export const client = createThirdwebClient({
 });
 
 // generate an array of market IDs based on the no of markets
-export const marketIds = (noOfMarkets) => {
+export const marketIds = (noOfMarkets:[]) => {
 return noOfMarkets
   ? Array.from({ length: Number(noOfMarkets) }, (_, i) => i + 1)
   : [];
