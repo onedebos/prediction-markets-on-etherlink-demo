@@ -9,14 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  TrendingUp,
-  TrendingDown,
   Clock,
   DollarSign,
   CheckCircle2,
   AlertTriangle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useReadContract } from "thirdweb/react";
 import { contract } from "@/lib/contract-utils";
