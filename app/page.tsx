@@ -7,7 +7,7 @@ import { MarketModal } from "@/components/market-modal"
 import { TradingModal } from "@/components/trading-modal"
 import { Market } from "@/types/market"
 import { ConnectButton } from "thirdweb/react";
-import {client} from '../lib/utils'
+import {client} from '../lib/providers'
 
 
 const sampleMarkets: Market[] = [
